@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="title" property="og:title" content="Tetaczxo" />
+    <meta name="image" property="og:image" content="https://live.staticflickr.com/65535/52926834634_ba14b091e6_o.png" />
+    <meta name="description" property="og:description" content="TicTacToe" />
+    <meta name="author" property="og:author"content="Prajeeth" />
+    <link rel="shortcut icon" type="image/x-icon" href="{% static '/images/favicon_w3cub/favicon.ico' %}" />
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/home.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static '/images/favicon_w3cub/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static '/images/favicon_w3cub/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static '/images/favicon_w3cub/favicon-16x16.png' %}">
+    <link rel="icon" href="{% static '/images/favicon_w3cub/favicon.ico' %}">
+    <link rel="manifest" href="/site.webmanifest">
+   
+</head>
+
+<body>
+    <div class="wrapper">
+        <img src="/static/images/tetacxzo logo.png" class="logo">
+
+
+        <form class="form" action="/" method="post">
+            {% csrf_token %}
+            <label id ='labelform1'name="roomid" for="room-id">Room Code</label>
+            <input type="number" name="room-id" id="room-id" placeholder="Enter Room Code (If You Have)">
+            <label name="username" id ='labelform2' for="player-name">Name</label>
+            <input type="text" name="player-name" id="player-name" placeholder="Enter Your Name" required>
+            <button id="actionBtn">Create New Room</button>
+        </form>
+        
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p {% if message.tags %} class="message {{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        const roomNameInp = document.getElementById("room-id")
+        const actionBtn = document.getElementById("actionBtn")
+        roomNameInp.addEventListener('keyup', e => {
+            if (e.currentTarget.value == "") {
+                actionBtn.innerText = "Create New Room"
+            } else {
+                actionBtn.innerText = "Join"
+            }
+        })        
+    </script>
+
+
+</body>
+
+</html>

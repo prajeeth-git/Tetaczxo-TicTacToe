@@ -1,0 +1,276 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="title" property="og:title" content="Tetaczxo" />
+    <meta name="image" property="og:image" content="https://live.staticflickr.com/65535/52926834634_ba14b091e6_o.png" />
+    <meta name="description" property="og:description" content="TicTacToe" />
+    <meta name="author" property="og:author"content="Prajeeth" />
+    <link rel="shortcut icon" type="image/x-icon" href="{% static '/images/favicon_w3cub/favicon.ico' %}" />
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}" /> -->
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static '/images/favicon_w3cub/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static '/images/favicon_w3cub/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static '/images/favicon_w3cub/favicon-16x16.png' %}">
+    <link rel="icon" href="{% static '/images/favicon_w3cub/favicon.ico' %}">
+    <link rel="manifest" href="/site.webmanifest">
+
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet" />
+    <title>Game Page</title>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/gamecss.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <img src="/static/images/tetacxzo logo.png" class="logo">
+
+        <div class="details">
+            <p>{{name}} (You)</p>
+            <p id="opponent-txt">Opponent (waiting to join)</p>
+        </div>
+        <div class="sidebars"> 
+        <div class="half-circle left" id="player_1"></div>
+        <div class="half-circle right" id ="player_2"></div>
+        </div>
+        <div class="container">
+            <div boxIndex="0" player="" class="box child box-1 b-right b-bottom"></div>
+            <div boxIndex="1" player="" class="box child box-2 b-left b-right b-bottom"></div>
+            <div boxIndex="2" player="" class="box child box-3 b-left b-bottom"></div>
+            <div boxIndex="3" player="" class="box child box-4 b-top b-right b-bottom"></div>
+            <div boxIndex="4" player="" class="box child box-5 b-top b-bottom b-right b-left"></div>
+            <div boxIndex="5" player="" class="box child box-6 b-top b-bottom b-left"></div>
+            <div boxIndex="6" player="" class="box child box-7 b-right b-top"></div>
+            <div boxIndex="7" player="" class="box child box-8 b-top b-right b-left"></div>
+            <div boxIndex="8" player="" class="box child box-9 b-top b-left"></div>
+        </div>
+        <div class="details">
+            <p id="turn"></p>
+        </div>
+        <div class="base">
+            <span class="mail-info">
+                <span class=""  id="copy-txt">Room code :</span>
+                <span class="mail-text" tooltip="Click to Copy" tooltip-position="bottom" id="copy-txt">{{room.id}}</span>
+
+            </span>
+        </div>
+    </div>
+
+    <script>
+        let board = {
+            0:'',1:'',2:'',
+            3:'',4:'',5:'',
+            6:'',7:'',8:'',
+        }
+        const oppname =document.getElementById("opponent-txt")
+        const Turnindi = document.getElementById("turn")
+        let myTurn = false
+        let playerLetter = ""
+
+        const boxes = document.getElementsByClassName("box")
+        Array.from(boxes).forEach((elm,i) => {
+            elm.addEventListener("click", e => {
+                if (myTurn && elm.innerHTML==="" && elm.getAttribute("player")=='' ){
+                    board[i]=playerLetter
+                    ws.send(JSON.stringify({
+                        event:'boardData_send',
+                        board:board,
+                    }))
+                addPlayerLetter(elm) 
+                myTurn=false
+                }
+            })            
+        })
+
+        function addPlayerLetter(element,player=playerLetter) {
+            element.innerHTML = `<p class="player-letter" >${player}</p>`
+            element.setAttribute("player", player)
+            setTimeout(() => {
+                element.children[0].classList.add("active")
+            }, 1);
+        }
+         
+        function resetBoard (){
+            Array.from(boxes).forEach(elm => {
+                elm.innerHTML = ``
+                elm.setAttribute("player", "")
+       
+
+            })
+        }  
+        function updateBoard (boardData){
+            Array.from(boxes).forEach((elm,i) => {
+                if (boardData[i] != "" && !elm.getAttribute("player")){
+                    addPlayerLetter(elm,boardData[i])
+                }
+
+            })
+        } 
+        const ws = new WebSocket("ws://127.0.0.1:8000/ws/game/{{room.id}}/")
+        
+        ws.onopen = e => {
+            console.log(e)
+        }
+        ws.onmessage = e=>{
+            console.log(e)
+            const data = JSON.parse(e.data)
+            if (data.event == "show_error" ){
+                Swal.fire({
+                    icon: 'error',
+                    title: data.error,
+                  }).then(e => window.location ='/' )
+            }
+        
+            else if (data.event =="game_start" ){
+                board = data.board
+                myTurn = data.myTurn
+                playerLetter = data.myTurn? "X":"O"
+                p1=document.getElementById("player_1")
+                p2=document.getElementById("player_2")
+                if (playerLetter=="X"){
+                    p1.innerHTML="X";
+                    p2.innerHTML="O";
+                }
+                else{
+                    p1.innerHTML="O";
+                    p2.innerHTML="X";
+                }
+
+                resetBoard()
+                Turnindi.innerHTML = data.myTurn? "Your Turn" : "Opponent's Turn"
+                oppname.innerHTML = "Opponent Joined"
+                setTimeout(()=>{
+                Swal.close()},500)
+   
+            }
+            else if (data.event =="boardData_send" ){
+                board = data.board
+                myTurn = data.myTurn
+                updateBoard(board)
+                Turnindi.innerHTML = data.myTurn? "Your Turn" : "Opponent's Turn"
+
+                
+            }
+            else if (data.event == "won" ){
+                board = data.board
+                myTurn = data.myTurn
+                updateBoard(board)
+                Turnindi.innerHTML = data.winner == playerLetter? "You Won" : "You Lost"
+                setTimeout(()=>{
+                    Swal.fire({
+                        title: data.winner == playerLetter? "You Won" : "You Lost",
+                        text: data.winner == playerLetter? "Yeah ! Cool " : "Don't Worry Try Again",
+                        imageUrl: data.winner == playerLetter? "/static/images/won.jpg" : "/static/images/lost.jpg",
+                        imageWidth: 200,
+                        imageHeight: 200,
+                        imageAlt: 'Custom image',
+                        confirmButtonText: "Restart",
+                      }).then(e => ws.send(JSON.stringify({
+                        event:'restart',
+                    })))
+                },700)
+
+
+                
+            }
+            else if (data.event == "draw" ){
+                board = data.board
+                myTurn = data.myTurn
+                updateBoard(board)
+                Turnindi.innerHTML = "Tie"
+                setTimeout(()=>{
+                    Swal.fire({
+                        title: "Tie",
+                        text: "Well played",
+                        imageUrl:"",
+                        imageWidth: 200,
+                        imageHeight: 200,
+                        imageAlt: 'Custom image',
+                        confirmButtonText: "Restart",
+                      }).then(e => ws.send(JSON.stringify({
+                        event:'restart',
+                    })))
+                },700)
+
+
+                
+            }
+            else if (data.event == "opponent_left" ){
+                board = data.board
+                resetBoard()
+                myTurn = data.myTurn
+                updateBoard(board)
+                Turnindi.innerHTML = "Opponent left"
+                oppname.innerHTML = "Opponent (waiting to join)"
+
+                setTimeout(()=>{
+                    Swal.fire({
+                        icon:"info",
+                        title: "Opponent Left Game",
+                        confirmButtonText: "Ok",
+                      })
+                },700)
+
+
+                
+            }
+        }
+
+
+        const copyMailId = document.querySelectorAll('.mail-text');
+
+        copyMailId.forEach(copyText => {
+            copyText.addEventListener('click', () => {
+                const selection = window.getSelection();
+
+                const range = document.createRange();
+                range.selectNodeContents(copyText);
+                selection.removeAllRanges();
+                selection.addRange(range);
+        
+                try {
+                    document.execCommand('copy');
+                    selection.removeAllRanges();
+        
+                    const mailId = copyText.textContent;
+                    copyText.textContent = 'Copied!';
+                    copyText.classList.add('success');
+        
+                    setTimeout(() => {
+                        copyText.textContent = mailId;
+                        copyText.classList.remove('success');
+                    }, 1000);
+                } catch (e) {
+                    copyText.textContent = 'Couldn\'t copy, hit Ctrl+C!';
+                    copyText.classList.add('error');
+        
+                    setTimeout(() => {
+                        errorMsg.classList.remove('show');
+                    }, 1200);
+                }
+            });
+        });
+
+
+
+
+
+
+    </script>
+ 
+
+</body>
+
+</html>

@@ -1,0 +1,221 @@
+@font-face {
+    font-family: 'Drip October Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: url('/static/fonts/DripOctober-vm0JA.woff') format('woff');
+    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.details {
+    font-family: 'Press Start 2P', cursive;   
+    font-size: 12px;
+    font-weight: bold;
+    width: 80%;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0px;
+    display: flex;
+    min-width: 420px;
+    line-height: 2;
+}
+
+#turn {
+    text-align: center;
+    width: 100%;
+}
+
+.wrapper {
+    background:black;
+    color:white;
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.container {
+    margin: 20px 0px;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.child {
+    font-family: "Drip October Regular";
+
+    width: 33.33333%;
+    height: 33.33333%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 120px;
+    /* padding: 19px; */
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.player-letter {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(0);
+    transition: all 0.25s ease-in-out;
+    opacity: 0;
+}
+
+.player-letter.active {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.b-top {
+    border-top: 3px solid;
+}
+
+.b-bottom {
+    border-bottom: 3px solid;
+}
+
+.b-left {
+    border-left: 3px solid;
+}
+
+.b-right {
+    border-right: 3px solid;
+}
+
+.half-circle {
+    position: fixed;
+    top: 0;
+    width: 5%;
+    height: 20%;
+/* From https://css.glass */
+    background: rgba(255, 250, 250, 0.64);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4.5px);
+    -webkit-backdrop-filter: blur(4.5px);
+    border: 1px solid rgba(255, 250, 250, 0.69);
+    /* background-color: rgba(255, 255, 255, 0.9); */
+    transform: translateY(50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', cursive;   
+    font-weight: bold;
+    font-size: 200%;
+    color: black;
+}
+  
+  .left {
+
+    border-radius: 0 50vw 50vw 0;
+    left: 0;
+  }
+  
+  .right {
+
+    border-radius: 50vw 0 0 50vw;
+    right: 0;
+  }
+.base{
+    margin-top: 3%;
+    margin-bottom: 1%;
+    color: #000000;
+    font-family: 'Press Start 2P', cursive;   
+	display: flex;
+	justify-content: center;
+	align-items: center;
+    width:75%;
+	background: #000000;
+    font-size: medium;
+	
+} 
+.mail-info {
+        font-family: 'Press Start 2P', cursive;   
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		cursor: pointer;
+		padding: 10px 25px;
+		border-radius: 8px;
+		background: white;
+		letter-spacing: 0.3px;
+		box-shadow: 0px 12px 17px rgba(255, 255, 255, 0.26);
+		font-weight: 600;
+}
+
+
+
+.mail-text {
+		font-size: 75%;
+        color: #000000;
+}
+
+[tooltip]{
+    position: relative;
+}
+
+[tooltip]::before {
+    content: "";
+    position: absolute;
+    top: -6%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 4px 6px 0 6px;
+    border-style: solid;
+    border-color: #fff transparent transparent transparent;
+    z-index: 100;
+    opacity: 0;
+    transition: all 100ms ease;
+    line-height: 2;
+
+}
+
+[tooltip]::after {
+    content: attr(tooltip);
+    position: absolute;
+    left: 50%;
+    top: -6px;
+    transform: translateX(-50%) translateY(-100%);
+    background: #fff;
+    text-align: center;
+    color: #000000;
+    padding: 4px 8px;
+    font-size: 10px;
+    min-width: 80px;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    line-height: 2;
+    transition: all 100ms ease;
+}
+
+[tooltip-position ='top']::before {
+    top: 100%;
+    margin-top: 36px;
+    transform: translateX(-50%) translatey(-100%) rotate(-180deg)
+}
+
+[tooltip-position='top']::after {
+    top: 100%;
+    margin-top: 36px;
+    transform: translateX(-50%) translateY(0);
+}
+
+[tooltip]:hover::after,
+[tooltip]:hover::before {
+    opacity: 1;
+}
